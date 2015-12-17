@@ -1,8 +1,10 @@
-import sys
+import helpers as helper
 
 
-def log(*objs):
-    print("LOG: ", *objs, file=sys.stderr)
+# 0 y-
+# 1 x+
+# 2 y+
+# 3 x-
 
 
 class RollingBalls:
@@ -13,7 +15,29 @@ class RollingBalls:
             sa += [list(s)]
         for s in target:
             ta += [list(s)]
+        x = self.build(sa)
+        for i in x:
+            helper.log(i)
         return tuple(self.algo1(sa, ta))
+
+    def build(self, start):
+        n = len(start)
+        m = len(start[0])
+        return [[self.calc(i, j, start) for j in range(m)] for i in range(n)]
+
+    def calc(self, x, y, start):
+        n = len(start)
+        m = len(start[0])
+        res = [y - 1, x + 1, y + 1, x - 1]
+        while res[0] >= 0 and start[x][res[0]] == '.':
+            res[0] -= 1
+        while res[1] < n and start[res[1]][y] == '.':
+            res[1] += 1
+        while res[2] < m and start[x][res[2]] == '.':
+            res[2] += 1
+        while res[3] >= 0 and start[res[3]][y] == '.':
+            res[3] -= 1
+        return res
 
     @staticmethod
     def algo1(s, t):
@@ -35,28 +59,3 @@ class RollingBalls:
                         s[i][j] = '.'
                         continue
         return res
-
-
-#### test code
-H = int(input())
-_start = []
-_target = []
-for i in range(H):
-    _start += [input()]
-
-H = int(input())
-for i in range(H):
-    _target += [input()]
-
-o = RollingBalls()
-ret = o.restorePattern(_start, _target)
-
-# output
-print(len(ret))
-log("Res.size() = ", len(ret))
-for s in ret:
-    print(s)
-    log(s)
-sys.stdout.flush()
-
-##### end of test code
