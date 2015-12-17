@@ -1,0 +1,1 @@
+java -jar tester.jar -exec "python Solution/Source/main.py" -seed 123
