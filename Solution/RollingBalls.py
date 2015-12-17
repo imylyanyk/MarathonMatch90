@@ -1,5 +1,3 @@
-import helpers as helper
-
 
 # 0 y-
 # 1 x+
@@ -8,6 +6,8 @@ import helpers as helper
 
 
 class RollingBalls:
+    global global_var
+
     def restorePattern(self, start, target):
         sa = []
         ta = []
@@ -15,9 +15,6 @@ class RollingBalls:
             sa += [list(s)]
         for s in target:
             ta += [list(s)]
-        x = self.build(sa)
-        for i in x:
-            helper.log(i)
         return tuple(self.algo1(sa, ta))
 
     def build(self, start):
@@ -39,8 +36,8 @@ class RollingBalls:
             res[3] -= 1
         return res
 
-    @staticmethod
-    def algo1(s, t):
+    def algo1(self, s, t):
+        walls = self.build(s)
         # trying to reach within one move
         n = len(s)
         m = len(s[0])
@@ -48,14 +45,24 @@ class RollingBalls:
         for i in range(n):
             for j in range(m):
                 if s[i][j].isdigit() and t[i][j].isdigit() == False:
-                    # investigate all directions (U,D,L,R)
-                    it = i - 1
-                    while it >= 0 and s[it][j] == '.':
-                        it -= 1
-                    it += 1
-                    if t[it][j].isdigit():
-                        res += [str(i) + ' ' + str(j) + ' ' + str(3)]
-                        s[it][j] = s[i][j]
+                    tmp = walls[i][j]
+                    step = [i, j, 4]
+                    if t[i][tmp[0] + 1].isdigit():
+                        step = [i, tmp[0] + 1, 0]
+
+                    if t[tmp[1] - 1][j].isdigit():
+                        step = [tmp[1] - 1, j, 1]
+
+                    if t[i][tmp[2] - 1].isdigit():
+                        step = [i, tmp[2] - 1, 2]
+
+                    if t[tmp[3] + 1][j].isdigit():
+                        step = [tmp[3] + 1, j, 3]
+
+                    if step[2] != 4:
+                        res += [str(i) + ' ' + str(j) + ' ' + str(step[2])]
+                        s[step[0]][step[1]] = s[i][j]
                         s[i][j] = '.'
+                        walls = self.build(s)
                         continue
         return res
