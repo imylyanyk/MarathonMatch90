@@ -1,0 +1,1 @@
+java -jar tester.jar -exec "python Solution/main.py" -seed 3 -delay 2
